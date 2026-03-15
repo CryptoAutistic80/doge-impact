@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The DOGE Death Count</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;700&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #080808;
+    --fg: #e0e0e0;
+    --red: #ff2020;
+    --red-dim: #991010;
+    --amber: #ffaa00;
+    --grey: #444;
+    --grey-light: #888;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 2rem;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 200px;
+    background: linear-gradient(to top, var(--bg), transparent);
+    pointer-events: none;
+  }
+
+  .label-top {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--grey-light);
+    margin-bottom: 0.75rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 0.3s forwards;
+    text-align: center;
+  }
+
+  .label-name {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--fg);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 0.5s forwards;
+    text-align: center;
+  }
+
+  .counter-wrap {
+    position: relative;
+    opacity: 0;
+    animation: fadeIn 1.2s ease 0.7s forwards;
+  }
+
+  #main-counter {
+    font-family: var(--mono);
+    font-size: clamp(2.5rem, 11vw, 8rem);
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    text-shadow: 0 0 80px rgba(255, 32, 32, 0.3), 0 0 20px rgba(255, 32, 32, 0.15);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .counter-subtitle {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--grey-light);
+    text-align: center;
+    margin-top: 1rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.1s forwards;
+  }
+
+  .rate-display {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--amber);
+    text-align: center;
+    margin-top: 2rem;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.3s forwards;
+    letter-spacing: 0.1em;
+  }
+
+  .rate-display span {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .quote {
+    margin-top: 2.5rem;
+    max-width: 550px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.6s forwards;
+  }
+
+  .quote blockquote {
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--grey-light);
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  .quote cite {
+    display: block;
+    margin-top: 0.75rem;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--grey);
+    font-style: normal;
+  }
+
+  .hero-sources {
+    margin-top: 2.5rem;
+    max-width: 500px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.8s forwards;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .hero-sources-label {
+    font-family: var(--mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 0.25rem;
+  }
+
+  .hero-sources a {
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    color: var(--grey);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    transition: color 0.2s ease;
+  }
+
+  .hero-sources a:hover {
+    color: var(--grey-light);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--grey);
+    opacity: 0;
+    animation: fadeIn 1s ease 2s forwards, pulse 3s ease-in-out 2s infinite;
+    z-index: 2;
+    cursor: pointer;
+  }
+
+  .scroll-hint::after {
+    content: '↓';
+    display: block;
+    text-align: center;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+  }
+
+  /* ── BREAKDOWN ── */
+  .breakdown {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 3rem;
+    border-bottom: 1px solid #1a1a1a;
+    padding-bottom: 1rem;
+  }
+
+  .category {
+    margin-bottom: 4rem;
+    padding-left: 1.5rem;
+    border-left: 2px solid #1a1a1a;
+    transition: border-color 0.5s ease;
+  }
+
+  .category:hover { border-left-color: var(--red-dim); }
+
+  .category-name {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--grey-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .category-figure {
+    font-family: var(--mono);
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-weight: 700;
+    color: var(--red);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .category-context {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--grey-light);
+    line-height: 1.7;
+    margin-top: 0.75rem;
+    max-width: 650px;
+  }
+
+  .category-source {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--grey);
+    margin-top: 0.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  .category-source a { color: var(--grey-light); text-decoration: none; }
+  .category-source a:hover { text-decoration: underline; }
+
+  .peer-reviewed {
+    display: inline-block;
+    background: rgba(255, 170, 0, 0.1);
+    border: 1px solid rgba(255, 170, 0, 0.2);
+    padding: 0.1em 0.5em;
+    font-family: var(--mono);
+    font-size: 0.55rem;
+    color: var(--amber);
+    border-radius: 2px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  /* ── METHODOLOGY ── */
+  .methodology {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 4rem 2rem 6rem;
+    border-top: 1px solid #1a1a1a;
+  }
+
+  .methodology h2 {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 2rem;
+  }
+
+  .methodology p {
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--grey-light);
+    line-height: 1.8;
+    margin-bottom: 1.25rem;
+    max-width: 650px;
+  }
+
+  .methodology a {
+    color: var(--grey-light);
+    text-decoration: underline;
+    text-decoration-color: var(--grey);
+    text-underline-offset: 3px;
+  }
+
+  .methodology a:hover { color: var(--fg); }
+
+  .source-list {
+    list-style: none;
+    margin-top: 1.5rem;
+  }
+
+  .source-list li {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--grey);
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #111;
+    line-height: 1.6;
+  }
+
+  .source-list li a { color: var(--grey-light); text-decoration: none; }
+  .source-list li a:hover { text-decoration: underline; }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 4rem 2rem;
+    border-top: 1px solid #111;
+  }
+
+  .footer p {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--grey);
+    letter-spacing: 0.2em;
+    line-height: 2.2;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+
+  @media (max-width: 600px) {
+    .breakdown { padding: 4rem 1.25rem; }
+    .methodology { padding: 3rem 1.25rem 4rem; }
+    .category { padding-left: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="label-top">Estimated deaths caused by</div>
+  <div class="label-name">Elon Musk's Department of Government Efficiency</div>
+  <div class="counter-wrap">
+    <div id="main-counter">000,000</div>
+  </div>
+  <div class="counter-subtitle">and counting</div>
+  <div class="rate-display">
+    <span id="rate-per-hour">—</span> deaths per hour
+  </div>
+  <div class="quote">
+    <blockquote>"Zero people have died."</blockquote>
+    <cite>— Elon Musk, May 2025, responding to the New York Times</cite>
+  </div>
+  <div class="hero-sources">
+    <div class="hero-sources-label">Sources</div>
+    <a href="https://www.bu.edu/sph/news/articles/2025/tracking-anticipated-deaths-from-usaid-funding-cuts/" target="_blank">Boston University / Impact Counter (peer-reviewed)</a>
+    <a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(25)01186-9/fulltext" target="_blank">The Lancet</a>
+    <a href="https://www.cgdev.org/blog/update-lives-lost-usaid-cuts" target="_blank">Center for Global Development</a>
+    <a href="https://www.cidrap.umn.edu/chikungunya/quick-takes-death-toll-usaid-cuts-withdrawal-chikungunya-vaccine-funding-updated-ebola" target="_blank">CIDRAP / University of Minnesota</a>
+    <a href="https://hsph.harvard.edu/news/usaid-shutdown-has-led-to-hundreds-of-thousands-of-deaths/" target="_blank">Harvard T.H. Chan School of Public Health</a>
+    <a href="https://www.cnn.com/2026/02/04/world/lancet-usaid-global-aid-cuts-intl" target="_blank">CNN / The Lancet (Feb 2026)</a>
+  </div>
+  <div class="scroll-hint" onclick="document.querySelector('.breakdown').scrollIntoView()">Breakdown</div>
+</section>
+
+<section class="breakdown">
+  <div class="section-label">Breakdown by category</div>
+
+  <div class="category">
+    <div class="category-name">
+      USAID / Foreign Aid Dismantlement — Global Health
+      <span class="peer-reviewed">Peer-reviewed</span>
+    </div>
+    <div class="category-figure" id="usaid-figure">—</div>
+    <div class="category-context">
+      DOGE spearheaded the cancellation of 83% of USAID programmes within weeks of inauguration. The Impact Counter project by Prof. Brooke Nichols (Boston University) — independently peer-reviewed and published in the Journal of the International AIDS Society — estimated 781,343 excess deaths by the one-year mark (January 2026), predominantly children. The Center for Global Development estimated 500,000–1,000,000 deaths in FY2025 alone. A Lancet study projects 14 million additional deaths by 2030 if cuts continue. The counter above uses Nichols's peer-reviewed model as its baseline.
+    </div>
+    <div class="category-source">
+      Sources: <a href="https://www.impactcounter.com/dashboard" target="_blank">ImpactCounter.com</a> ·
+      <a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(25)01186-9/fulltext" target="_blank">The Lancet (July 2025)</a> ·
+      <a href="https://www.cgdev.org/blog/update-lives-lost-usaid-cuts" target="_blank">Center for Global Development</a>
+    </div>
+  </div>
+
+  <div class="category">
+    <div class="category-name">PEPFAR — HIV/AIDS Treatment Disruption</div>
+    <div class="category-figure" id="pepfar-figure">—</div>
+    <div class="category-context">
+      PEPFAR supported 20 million people on antiretroviral treatment across 55 countries. DOGE-driven stop-work orders disrupted medication supplies to 2.3 million people on lifesaving antiretrovirals. Stock-outs of HIV medicines were reported across sub-Saharan Africa. ImpactCounter estimated 158,000+ adult deaths from HIV alone in sub-Saharan Africa within the first year, plus 16,000 child deaths. This figure is included within the USAID total above but shown separately to illustrate scale.
+    </div>
+    <div class="category-source">
+      Source: <a href="https://pepfar.impactcounter.com/" target="_blank">PEPFAR Impact Tracker</a>
+    </div>
+  </div>
+
+  <div class="category">
+    <div class="category-name">Child Deaths — Pneumonia, Diarrhea, Malaria, Malnutrition</div>
+    <div class="category-figure" id="child-figure">—</div>
+    <div class="category-context">
+      Of the total excess deaths, the majority are children. ImpactCounter broke these down: 164,000+ child deaths from pneumonia, 125,000+ from diarrhea, 70,000+ from malaria, and tens of thousands more from malnutrition — all from terminated USAID programmes that previously provided vaccines, oral rehydration therapy, bed nets, and therapeutic feeding. The Lancet projects 700,000 additional child deaths per year if cuts continue.
+    </div>
+    <div class="category-source">
+      Source: <a href="https://www.cidrap.umn.edu/chikungunya/quick-takes-death-toll-usaid-cuts-withdrawal-chikungunya-vaccine-funding-updated-ebola" target="_blank">CIDRAP / University of Minnesota</a>
+    </div>
+  </div>
+
+  <div class="category">
+    <div class="category-name">Veterans Affairs — Domestic Healthcare Disruption</div>
+    <div class="category-figure" style="color: var(--amber);">Unquantified</div>
+    <div class="category-context">
+      2,400+ VA employees fired, with plans to cut 80,000 more (1 in 5 staff). Suicide prevention services temporarily cancelled. Cancer research contracts terminated. VA doctors report care disruption nationwide. Veterans Crisis Line staff fired. Transportation services for disabled veterans cut. ProPublica revealed DOGE used an AI tool to mark VA contracts as "MUNCHABLE" for cancellation — including cancer treatment equipment and blood analysis services. The death toll from domestic VA disruption has not yet been formally modelled but veterans were already dying on waitlists before these cuts.
+    </div>
+    <div class="category-source">
+      Sources: <a href="https://www.propublica.org/article/doge-veterans-affairs-ai-senator-investigation" target="_blank">ProPublica</a> ·
+      <a href="https://www.pogo.org/analyses/vas-doge-cuts-sting-and-will-reduce-efficiency" target="_blank">Project on Government Oversight</a>
+    </div>
+  </div>
+
+  <div class="category">
+    <div class="category-name">Domestic Health — HHS, CDC, NIH, FDA, Medicare</div>
+    <div class="category-figure" style="color: var(--amber);">Unquantified</div>
+    <div class="category-context">
+      20,000 HHS employees cut. 35% reduction in all HHS contract spending ($13.6B/yr). Half of HHS regional offices closed. 694+ NIH grants terminated ($1.8B in revoked funding). CDC disease surveillance programmes defunded. Infectious disease tracking disrupted — the US lost its measles elimination status. FDA food safety inspectors reduced. Medicaid facing 11% annual cuts affecting 72 million low-income Americans. These impacts will produce excess deaths over years and decades, but no formal model yet exists to quantify them.
+    </div>
+    <div class="category-source">
+      Sources: <a href="https://www.medicarerights.org/medicare-watch/2025/03/27/hhs-announces-sweeping-cuts-that-threaten-access-to-critical-services" target="_blank">Medicare Rights Center</a> ·
+      <a href="https://thehill.com/policy/healthcare/5158519-trump-administration-federal-government-cuts/" target="_blank">The Hill</a>
+    </div>
+  </div>
+</section>
+
+<section class="methodology">
+  <h2>Methodology</h2>
+
+  <p>
+    Unlike the domestic categories (which lack formal mortality models), the global health death toll from DOGE's USAID dismantlement is backed by peer-reviewed academic research. The primary counter uses the methodology of Prof. Brooke Nichols (Boston University School of Public Health), whose Impact Counter model was independently peer-reviewed and published in the Journal of the International AIDS Society.
+  </p>
+
+  <p>
+    Nichols's model estimated 781,343 excess deaths by January 24, 2026 — the one-year anniversary of the funding freeze — at which point the counter was retired. The rate at that point was approximately 88 deaths per hour, or 2,112 per day.
+  </p>
+
+  <p>
+    This page extrapolates forward from that baseline at the established daily rate, as the funding cuts remain in effect and have not been reversed. If anything, this is conservative: the Center for Global Development's December 2025 update estimated 500,000–1,000,000 deaths from FY2025 cuts alone, and a February 2026 Lancet study projects 9.4 million excess deaths globally from combined aid cuts by 2030.
+  </p>
+
+  <p>
+    The "unquantified" domestic categories (VA, HHS, CDC, NIH, Medicare) are listed without numerical estimates because no peer-reviewed mortality model yet exists for those impacts. They are included to show the full scope of DOGE's actions. As formal studies emerge, they can be incorporated.
+  </p>
+
+  <p>
+    Elon Musk's personal responsibility is attributed based on his documented role as de facto leader of DOGE (as found by a federal judge), his personal direction of the USAID dismantlement, and his public dismissal of the death toll ("zero people have died"). Senator Schatz cited 360,000 deaths on the Senate floor. Harvard's Atul Gawande cited 600,000 in The New Yorker. The Lancet published peer-reviewed estimates of millions more to come.
+  </p>
+
+  <h2 style="margin-top: 3rem;">Sources</h2>
+  <ul class="source-list">
+    <li><a href="https://www.impactcounter.com/dashboard" target="_blank">Impact Counter — Prof. Brooke Nichols, Boston University (peer-reviewed model)</a></li>
+    <li><a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(25)01186-9/fulltext" target="_blank">The Lancet — "Evaluating the impact of two decades of USAID interventions" (July 2025)</a></li>
+    <li><a href="https://www.cnn.com/2026/02/04/world/lancet-usaid-global-aid-cuts-intl" target="_blank">CNN / The Lancet — 9.4 million projected deaths from global aid cuts by 2030 (Feb 2026)</a></li>
+    <li><a href="https://www.cgdev.org/blog/update-lives-lost-usaid-cuts" target="_blank">Center for Global Development — Update on Lives Lost from USAID Cuts (Dec 2025)</a></li>
+    <li><a href="https://hsph.harvard.edu/news/usaid-shutdown-has-led-to-hundreds-of-thousands-of-deaths/" target="_blank">Harvard T.H. Chan School of Public Health — Atul Gawande on USAID shutdown deaths</a></li>
+    <li><a href="https://www.schatz.senate.gov/news/press-releases/schatz-details-trump-administrations-destruction-of-usaid-deadly-consequences-that-followed-as-senate-considers-codifying-doge-cuts" target="_blank">Senator Brian Schatz — 360,000 deaths cited on Senate floor</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Department_of_Government_Efficiency" target="_blank">Wikipedia — DOGE (793,900 deaths cited as of Feb 2026)</a></li>
+    <li><a href="https://www.propublica.org/article/doge-veterans-affairs-ai-senator-investigation" target="_blank">ProPublica — DOGE's AI-driven VA contract cancellations</a></li>
+    <li><a href="https://www.cidrap.umn.edu/chikungunya/quick-takes-death-toll-usaid-cuts-withdrawal-chikungunya-vaccine-funding-updated-ebola" target="_blank">CIDRAP — 762,000+ deaths including 500,000+ children (Jan 2026)</a></li>
+    <li><a href="https://time.com/7342386/trump-government-cuts-foreign-aid-health-climate-workers/" target="_blank">TIME — Trump's Year of Government Cuts (Jan 2026)</a></li>
+    <li><a href="https://healthpolicy-watch.news/the-human-cost-one-year-after-the-us-took-a-chainsaw-to-global-health/" target="_blank">Health Policy Watch — 757,314 deaths at one year, 88 per hour</a></li>
+  </ul>
+</section>
+
+<footer class="footer">
+  <p>
+    Based on peer-reviewed research from Boston University,<br>
+    The Lancet, and the Center for Global Development.<br><br>
+    Two-thirds of the dead are children.<br><br>
+    "Zero people have died." — Elon Musk<br><br>
+    Last updated: March 2026
+  </p>
+</footer>
+
+<script>
+(function() {
+  // ═══════════════════════════════════════════════
+  // DATA MODEL
+  // ═══════════════════════════════════════════════
+  //
+  // Primary source: Prof. Brooke Nichols, BU School of Public Health
+  // ImpactCounter retired at 1-year mark:
+  //   781,343 deaths as of Jan 24, 2026
+  //
+  // Rate: 88 deaths/hour = 2,112/day = 0.02444.../second
+  //
+  // The counter shows decimal places that climb continuously,
+  // making the accumulation of death viscerally visible.
+  // ═══════════════════════════════════════════════
+
+  const referenceDate = new Date('2026-01-24T00:00:00Z');
+  const baseTotal = 781343;
+
+  const deathsPerHour = 88;
+  const deathsPerSecond = deathsPerHour / 3600;
+
+  // Sub-category figures
+  const pepfarDeaths = 174000;
+  const childDeaths = 500000;
+
+  // ═══════════════════════════════════════════════
+  // ELEMENTS
+  // ═══════════════════════════════════════════════
+
+  const mainEl = document.getElementById('main-counter');
+  const rateEl = document.getElementById('rate-per-hour');
+  const usaidEl = document.getElementById('usaid-figure');
+  const pepfarEl = document.getElementById('pepfar-figure');
+  const childEl = document.getElementById('child-figure');
+
+  function formatNumber(n) {
+    return Math.floor(n).toLocaleString('en-US');
+  }
+
+  // Static figures
+  rateEl.textContent = deathsPerHour;
+  pepfarEl.textContent = formatNumber(pepfarDeaths) + '+';
+  childEl.textContent = formatNumber(childDeaths) + '+';
+
+  // ═══════════════════════════════════════════════
+  // SMOOTH DECIMAL COUNTER
+  // ═══════════════════════════════════════════════
+  //
+  // Shows 4 decimal places ticking upward continuously.
+  // The whole number part is large and bright.
+  // The decimal part is smaller and dimmer — but always moving.
+  // Every ~41 seconds the whole number rolls over by 1.
+  //
+
+  function getPreciseCount() {
+    const now = new Date();
+    const elapsedSeconds = (now - referenceDate) / 1000;
+    return baseTotal + Math.max(0, elapsedSeconds * deathsPerSecond);
+  }
+
+  let lastRendered = 0;
+
+  function tick() {
+    const count = Math.floor(getPreciseCount());
+
+    if (count !== lastRendered) {
+      const wholeStr = count.toLocaleString('en-US');
+      mainEl.textContent = wholeStr;
+      usaidEl.textContent = wholeStr;
+      lastRendered = count;
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  setTimeout(tick, 700);
+})();
+</script>
+
+</body>
+</html>
