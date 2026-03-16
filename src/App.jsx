@@ -6,6 +6,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function App() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const navItems = [
+    { to: '/', label: 'Overview' },
+    { to: '/methodology', label: 'Methodology' },
+    { to: '/sources', label: 'Sources' },
+    { to: '/support-us', label: 'Support Us' },
+  ];
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -19,9 +25,11 @@ export default function App() {
 
         {/* Desktop nav links */}
         <div className="nav-links desktop-nav">
-          <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Overview</Link>
-          <Link to="/methodology" className={location.pathname === '/methodology' ? 'active' : ''}>Methodology</Link>
-          <Link to="/sources" className={location.pathname === '/sources' ? 'active' : ''}>Sources</Link>
+          {navItems.map((item) => (
+            <Link key={item.to} to={item.to} className={location.pathname === item.to ? 'active' : ''}>
+              {item.label}
+            </Link>
+          ))}
         </div>
 
         {/* Hamburger button — mobile only */}
@@ -46,9 +54,16 @@ export default function App() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.25 }}
           >
-            <Link to="/" className={location.pathname === '/' ? 'active' : ''} onClick={closeMenu}>Overview</Link>
-            <Link to="/methodology" className={location.pathname === '/methodology' ? 'active' : ''} onClick={closeMenu}>Methodology</Link>
-            <Link to="/sources" className={location.pathname === '/sources' ? 'active' : ''} onClick={closeMenu}>Sources</Link>
+            {navItems.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={location.pathname === item.to ? 'active' : ''}
+                onClick={closeMenu}
+              >
+                {item.label}
+              </Link>
+            ))}
           </motion.div>
         )}
       </AnimatePresence>
@@ -78,4 +93,3 @@ export default function App() {
     </div>
   );
 }
-
