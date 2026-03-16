@@ -1,5 +1,5 @@
 export const SITE_NAME = 'DOGE Impact Counter';
-export const DEFAULT_SITE_URL = 'https://death-count.vercel.app';
+export const DEFAULT_SITE_URL = 'https://doge-impact.org';
 export const DEFAULT_THEME_COLOR = '#050505';
 export const ROBOTS_CONTENT =
   'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
