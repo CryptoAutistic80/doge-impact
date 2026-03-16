@@ -1,6 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;700&family=Inter:wght@300;400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;700&family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@400;700;900&display=swap');
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 :root {
   --bg: #050505;
@@ -13,19 +17,21 @@
   --grey-light: #aaa;
   --mono: 'IBM Plex Mono', monospace;
   --sans: 'Inter', sans-serif;
-  
+  --serif: 'Playfair Display', serif;
+
   --border-color: rgba(255, 255, 255, 0.08);
 }
 
-html { 
-  scroll-behavior: smooth; 
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--bg);
-  background-image: 
+  background-image:
     radial-gradient(circle at 50% -20%, rgba(255, 32, 32, 0.05), transparent 60%),
-    url('/abstract-bg.png'); /* The subtle nano banana pattern */
+    url('/abstract-bg.png');
+  /* The subtle nano banana pattern */
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -46,7 +52,9 @@ body {
 
 .navbar {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 70px;
   display: flex;
   justify-content: space-between;
@@ -73,6 +81,75 @@ body {
 .nav-links {
   display: flex;
   gap: 2rem;
+}
+
+/* Hamburger button — hidden on desktop */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 1001;
+}
+
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--fg);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center;
+}
+
+/* Animate into an X when open */
+.hamburger.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Full-width dropdown nav for mobile */
+.mobile-nav {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  background: rgba(5, 5, 5, 0.97);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 2rem;
+  gap: 1.5rem;
+  z-index: 999;
+}
+
+.mobile-nav a {
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  color: var(--grey-light);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+  transition: color 0.2s;
+}
+
+.mobile-nav a.active,
+.mobile-nav a:hover {
+  color: var(--fg);
 }
 
 .nav-links a {
@@ -108,7 +185,8 @@ body {
 
 .page-content {
   flex: 1;
-  padding-top: 70px; /* Offset for navbar */
+  padding-top: 70px;
+  /* Offset for navbar */
 }
 
 /* Footer */
@@ -180,8 +258,19 @@ a.inline-link:hover {
 }
 
 @media (max-width: 768px) {
-  .nav-links { gap: 1rem; }
-  .nav-links a { font-size: 0.75rem; }
-  .navbar { padding: 0 1rem; }
-  .page-wrapper { padding: 3rem 1.5rem; }
+  .desktop-nav {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .navbar {
+    padding: 0 1rem;
+  }
+
+  .page-wrapper {
+    padding: 3rem 1.5rem;
+  }
 }

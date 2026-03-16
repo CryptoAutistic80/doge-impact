@@ -1,0 +1,42 @@
+.soul-container {
+    position: fixed;
+    bottom: 35%;
+    /* Spawn roughly at the heartbeat line level */
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.soul-orb {
+    width: 70px;
+    height: 90px;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 1) 0%, rgba(255, 230, 240, 0.8) 40%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(6px) drop-shadow(0 0 40px rgba(255, 180, 200, 0.8));
+    animation: gentle-pulse 3s ease-in-out infinite alternate;
+}
+
+.soul-trail {
+    width: 45px;
+    height: 250px;
+    background: linear-gradient(to bottom, rgba(255, 200, 220, 0.5), transparent);
+    filter: blur(12px);
+    margin-top: -40px;
+    /* Overlap the orb thoroughly */
+    border-radius: 0 0 50% 50%;
+}
+
+@keyframes gentle-pulse {
+    0% {
+        transform: scale(0.9) translateY(0);
+        opacity: 0.85;
+    }
+
+    100% {
+        transform: scale(1.05) translateY(-8px);
+        opacity: 1;
+    }
+}

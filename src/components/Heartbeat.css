@@ -1,0 +1,58 @@
+.heartbeat-container {
+    width: 100vw;
+    height: 80px;
+    margin: 0 -2rem 1rem -2rem;
+    /* Negate the padding of hero-content to touch the edges */
+    overflow: hidden;
+    position: relative;
+    /* Fade out the line gracefully at the very edges of the screen */
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.heartbeat-svg {
+    /* We make the SVG much wider than the viewport so the animation has a long track to run on */
+    width: 300vw;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.beat-animation {
+    /* 
+     * The longer the track, the more time it takes to traverse.
+     * We need to tune this speed based on the 300vw width so it doesn't zip by too fast. 
+     */
+    animation: ekg-slide-left 4s linear infinite;
+}
+
+.flatline-animation {
+    animation: ekg-slide-left 8s linear infinite;
+}
+
+.ekg-line {
+    fill: none;
+    stroke: var(--red);
+    stroke-width: 2;
+    filter: drop-shadow(0 0 8px var(--red));
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.5s ease, filter 0.5s ease;
+}
+
+.flatline-path {
+    stroke: var(--red);
+    filter: drop-shadow(0 0 8px var(--red));
+    stroke-width: 3;
+}
+
+@keyframes ekg-slide-left {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}

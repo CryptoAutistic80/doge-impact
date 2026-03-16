@@ -37,7 +37,8 @@
 
 .hero-content {
     text-align: center;
-    padding: 2rem;
+    padding: 10rem 2rem 2rem 2rem;
+    /* Added even more top padding to visually center */
     max-width: 900px;
     width: 100%;
     display: flex;
@@ -55,12 +56,15 @@
 }
 
 .label-name {
-    font-family: var(--mono);
-    font-size: 0.95rem;
-    letter-spacing: 0.2em;
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
     text-transform: uppercase;
     color: var(--fg);
     margin-bottom: 2rem;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2), 0 0 40px rgba(255, 255, 255, 0.1);
 }
 
 /* Counter styles */
