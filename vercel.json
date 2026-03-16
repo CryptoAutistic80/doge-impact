@@ -4,9 +4,20 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
+      "source": "/methodology",
+      "destination": "/methodology/index.html"
+    },
+    {
+      "source": "/sources",
+      "destination": "/sources/index.html"
+    },
+    {
+      "source": "/support-us",
+      "destination": "/support-us/index.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
 }
-

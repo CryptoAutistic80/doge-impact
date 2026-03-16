@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Seo from './components/Seo';
 
 export default function App() {
   const location = useLocation();
@@ -17,6 +18,7 @@ export default function App() {
 
   return (
     <div className="app-container">
+      <Seo />
       <nav className="navbar">
         <Link to="/" className="brand" onClick={closeMenu}>
           <Activity size={20} color="var(--red)" />
